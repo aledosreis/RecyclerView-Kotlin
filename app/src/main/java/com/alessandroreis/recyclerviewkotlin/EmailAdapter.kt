@@ -1,5 +1,8 @@
 package com.alessandroreis.recyclerviewkotlin
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.Typeface.BOLD
@@ -11,9 +14,12 @@ import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.core.animation.addListener
 import androidx.core.util.isNotEmpty
 import androidx.recyclerview.widget.RecyclerView
 import com.alessandroreis.recyclerviewkotlin.model.Email
@@ -113,10 +119,31 @@ class EmailAdapter (val emails: MutableList<Email>) : RecyclerView.Adapter<Email
                     }
                 }
 
-                // if (selectedItems.isNotEmpty())
-                    // animate
+                 if (selectedItems.isNotEmpty())
+                     animate(txtIcon, email)
             }
         }
+    }
+
+    fun animate(view: TextView, email: Email) {
+        val oa1 = ObjectAnimator.ofFloat(view, "scaleX", 1f, 0f)
+        val oa2 = ObjectAnimator.ofFloat(view, "scaleX", 0f, 1f)
+
+        oa1.interpolator = DecelerateInterpolator()
+        oa2.interpolator = AccelerateDecelerateInterpolator()
+
+        oa1.duration = 200
+        oa2.duration = 200
+
+        oa1.addListener(object: AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                if (email.selected)
+                    view.text = "\u2713"
+                oa2.start()
+            }
+        })
+        oa1.start()
     }
 
 }

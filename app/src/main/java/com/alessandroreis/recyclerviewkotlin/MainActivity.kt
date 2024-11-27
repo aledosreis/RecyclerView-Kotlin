@@ -1,7 +1,10 @@
 package com.alessandroreis.recyclerviewkotlin
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alessandroreis.recyclerviewkotlin.model.email
@@ -14,6 +17,7 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: EmailAdapter
+    private var actionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +43,56 @@ class MainActivity : AppCompatActivity() {
         )
 
         helper.attachToRecyclerView(recyclerViewMain)
+        adapter.onItemClick = {
+            enableActionMode(it)
+        }
+
+        adapter.onItemLongClick = {
+            enableActionMode(it)
+        }
+    }
+
+    private fun enableActionMode(position: Int) {
+        if (actionMode == null)
+            actionMode = startSupportActionMode(object: ActionMode.Callback {
+                override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                    mode?.menuInflater?.inflate(R.menu.menu_delete, menu)
+                    return true
+                }
+
+                override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                    return false
+                }
+
+                override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                    if (item?.itemId == R.id.action_delete) {
+                        adapter.deleteEmails()
+                        mode?.finish()
+                        return true
+                    }
+                    return false
+                }
+
+                override fun onDestroyActionMode(mode: ActionMode?) {
+                    adapter.selectedItems.clear()
+                    adapter.emails
+                        .filter { it.selected }
+                        .forEach { it.selected = false }
+
+                    adapter.notifyDataSetChanged()
+                    actionMode = null
+                }
+
+            })
+
+        adapter.toggleSelection(position)
+        val size = adapter.selectedItems.size()
+        if (size == 0) {
+            actionMode?.finish()
+        } else {
+            actionMode?.title = "$size"
+            actionMode?.invalidate()
+        }
     }
 
     inner class ItemTouchHelper(dragDirs: Int, swipeDirs: Int) :

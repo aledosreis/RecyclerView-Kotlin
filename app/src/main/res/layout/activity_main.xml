@@ -27,6 +27,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/app_bar"
         android:background="@android:color/white"
+        tools:listitem="@layout/list_item"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

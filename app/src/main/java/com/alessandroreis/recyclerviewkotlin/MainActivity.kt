@@ -2,6 +2,7 @@ package com.alessandroreis.recyclerviewkotlin
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alessandroreis.recyclerviewkotlin.model.email
@@ -9,6 +10,7 @@ import com.alessandroreis.recyclerviewkotlin.model.fakeEmails
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mooveit.library.Fakeit
 import java.text.SimpleDateFormat
+import java.util.Collections
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -30,6 +32,38 @@ class MainActivity : AppCompatActivity() {
             addEmail()
             recyclerViewMain.scrollToPosition(0)
         }
+
+        val helper = androidx.recyclerview.widget.ItemTouchHelper(
+            ItemTouchHelper(
+                androidx.recyclerview.widget.ItemTouchHelper.UP or
+                        androidx.recyclerview.widget.ItemTouchHelper.DOWN,
+                androidx.recyclerview.widget.ItemTouchHelper.LEFT
+            )
+        )
+
+        helper.attachToRecyclerView(recyclerViewMain)
+    }
+
+    inner class ItemTouchHelper(dragDirs: Int, swipeDirs: Int) :
+        androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(
+            dragDirs, swipeDirs
+        ) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            val from = viewHolder.adapterPosition
+            val to = target.adapterPosition
+
+            Collections.swap(adapter.emails, from, to)
+            adapter.notifyItemMoved(from, to)
+
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        }
     }
 
     private fun addEmail() {
@@ -49,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                         add(Fakeit.lorem().words())
                     }
                 }.joinToString(" ")
-        })
+            })
 
         adapter.notifyItemInserted(0)
     }

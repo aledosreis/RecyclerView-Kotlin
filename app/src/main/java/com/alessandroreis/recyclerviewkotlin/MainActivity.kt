@@ -2,7 +2,6 @@ package com.alessandroreis.recyclerviewkotlin
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alessandroreis.recyclerviewkotlin.model.email
@@ -35,9 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         val helper = androidx.recyclerview.widget.ItemTouchHelper(
             ItemTouchHelper(
-                androidx.recyclerview.widget.ItemTouchHelper.UP or
-                        androidx.recyclerview.widget.ItemTouchHelper.DOWN,
-                androidx.recyclerview.widget.ItemTouchHelper.LEFT
+                0, androidx.recyclerview.widget.ItemTouchHelper.LEFT
             )
         )
 

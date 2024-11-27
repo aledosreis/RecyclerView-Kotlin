@@ -29,4 +29,17 @@
         android:background="@android:color/white"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:src="@drawable/baseline_add_24"
+        app:backgroundTint="@android:color/white"
+        app:rippleColor="@android:color/darker_gray"
+        android:tint="@android:color/holo_red_dark"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>
